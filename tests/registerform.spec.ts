@@ -1,113 +1,127 @@
 import { test, expect } from '@playwright/test';
+import HomePage from '../Pages/Homepage';
+import RegisterForm from '../Forms/Registerform';
 
-const selectors = {
-    signUpButton: '.hero-descriptor_btn.btn-primary',
-    nameField: '#signupName',
-    lastNameField: '#signupLastName',
-    emailField: '#signupEmail',
-    passwordField: '#signupPassword',
-    reenterPasswordField: '#signupRepeatPassword',
-    registerButton: 'button[type="button"].btn.btn-primary',
-};
-
-test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.locator(selectors.signUpButton).click();
-});
 
 test.describe('Field Name', () => {
-    test('Empty field', async ({ page }) => {
-        await page.locator(selectors.nameField).click();
-        await page.locator(selectors.nameField).blur();
-        await expect(page.locator('.invalid-feedback')).toHaveText('Name required');
+    let registerForm: RegisterForm;
+
+    test.beforeEach(async ({ page }) => {
+        registerForm = new RegisterForm(page);
+        await registerForm.openPage();
     });
 
-    test('Wrong data', async ({ page }) => {
-        await page.locator(selectors.nameField).fill('1234');
-        await page.locator(selectors.nameField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Name is invalid');
+    test('Empty field', async () => {
+        await registerForm.fillName('');
+        await expect(registerForm.errorMessage).toHaveText('Name required');
     });
 
-    test('Wrong length', async ({ page }) => {
-        await page.locator(selectors.nameField).fill('1');
-        await page.locator(selectors.nameField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Name is invalid');
-        await expect(page.locator('.invalid-feedback p').nth(1)).toHaveText('Name has to be from 2 to 20 characters long');
+    test('Wrong data', async () => {
+        await registerForm.fillName('1234');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Name is invalid');
     });
 
-    test('Border colour red', async ({ page }) => {
-        await page.locator(selectors.nameField).fill('1');
-        await page.locator(selectors.nameField).blur();
-        await expect(page.locator(selectors.nameField)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+    test('Wrong length', async () => {
+        await registerForm.fillName('1');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Name is invalid');
+        await expect(registerForm.errorMessage.nth(1)).toHaveText('Name has to be from 2 to 20 characters long');
+    });
+
+    test('Border colour red', async () => {
+        await registerForm.fillName('1');
+        await expect(registerForm.nameField).toHaveCSS('border-color', 'rgb(220, 53, 69)');
     });
 });
 
 test.describe('Field Last Name', () => {
-    test('Empty field', async ({ page }) => {
-        await page.locator(selectors.lastNameField).click();
-        await page.locator(selectors.lastNameField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Last name required');
+    let registerForm: RegisterForm;
+
+    test.beforeEach(async ({ page }) => {
+        registerForm = new RegisterForm(page);
+        await registerForm.openPage();
     });
 
-    test('Wrong data', async ({ page }) => {
-        await page.locator(selectors.lastNameField).fill('сонце');
-        await page.locator(selectors.lastNameField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Last name is invalid');
+    test('Empty field', async () => {
+        await registerForm.fillLastName('');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Last name required');
     });
 
-    test('Wrong length', async ({ page }) => {
-        await page.locator(selectors.lastNameField).fill('A');
-        await page.locator(selectors.lastNameField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Last name has to be from 2 to 20 characters long');
+    test('Wrong data', async () => {
+        await registerForm.fillLastName('сонце');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Last name is invalid');
+    });
+
+    test('Wrong length', async () => {
+        await registerForm.fillLastName('A');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Last name has to be from 2 to 20 characters long');
     });
 });
 
 test.describe('Field Email', () => {
-    test('Empty field', async ({ page }) => {
-        await page.locator(selectors.emailField).click();
-        await page.locator(selectors.emailField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Email required');
+    let registerForm: RegisterForm;
+
+    test.beforeEach(async ({ page }) => {
+        registerForm = new RegisterForm(page);
+        await registerForm.openPage();
     });
 
-    test('Wrong data', async ({ page }) => {
-        await page.locator(selectors.emailField).fill('monday');
-        await page.locator(selectors.emailField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Email is incorrect');
+    test('Empty field', async () => {
+        await registerForm.fillEmail('');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Email required');
+    });
+
+    test('Wrong data', async () => {
+        await registerForm.fillEmail('monday');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Email is incorrect');
     });
 });
 
 test.describe('Password', () => {
-    test('Empty field', async ({ page }) => {
-        await page.locator(selectors.passwordField).click();
-        await page.locator(selectors.passwordField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Password required');
+    let registerForm: RegisterForm;
+
+    test.beforeEach(async ({ page }) => {
+        registerForm = new RegisterForm(page);
+        await registerForm.openPage();
     });
 
-    test('Wrong data', async ({ page }) => {
-        await page.locator(selectors.passwordField).fill('easypassword');
-        await page.locator(selectors.passwordField).blur();
-        await expect(page.locator('.invalid-feedback p').nth(0)).toHaveText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
+    test('Empty field', async () => {
+        await registerForm.fillPassword('');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Password required');
+    });
+
+    test('Wrong data', async () => {
+        await registerForm.fillPassword('easypassword');
+        await expect(registerForm.errorMessage.nth(0)).toHaveText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
     });
 });
 
-test.describe('Button register', () => {
-    test('Button presence', async ({ page }) => {
-        await expect(page.locator(selectors.registerButton)).toBeVisible();
+test.describe('Button Register', () => {
+    let registerForm: RegisterForm;
+
+    test.beforeEach(async ({ page }) => {
+        registerForm = new RegisterForm(page);
+        await registerForm.openPage();
     });
 
-    test('Button disable', async ({ page }) => {
-        await expect(page.locator(selectors.registerButton)).toBeDisabled();
+    test('Button presence', async () => {
+        await expect(registerForm.registerButton).toBeVisible();
+    });
+
+    test('Button disable', async () => {
+        await expect(registerForm.registerButton).toBeDisabled();
     });
 });
 
 test.describe('E2E', () => {
     test('Successful Registration', async ({ page }) => {
-        await page.locator(selectors.nameField).fill('Daria');
-        await page.locator(selectors.lastNameField).fill('Tkachuk');
-        await page.locator(selectors.emailField).fill(`dariaaa.tkachuk+${Date.now()}@gmail.com`);
-        await page.locator(selectors.passwordField).fill('Testerauto123');
-        await page.locator(selectors.reenterPasswordField).fill('Testerauto123');
-        await page.locator(selectors.registerButton).click();
+        const registerForm = new RegisterForm(page);
+        await registerForm.openPage();
+        await registerForm.fillName('Daria');
+        await registerForm.fillLastName('Tkachuk');
+        await registerForm.fillEmail(`dariaaa.tkachuk+${Date.now()}@gmail.com`);
+        await registerForm.fillPassword('Testerauto123');
+        await registerForm.fillReenterPassword('Testerauto123');
+        await registerForm.submitRegistration();
         await expect(page).toHaveURL(/.*\/panel\/garage/);
     });
 });
