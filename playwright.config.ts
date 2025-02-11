@@ -42,14 +42,15 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
+      name: 'setup',
       use: { ...devices['Desktop Chrome'] },
-    },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    },
+    {
+      name: 'e2e',
+        use: { ...devices['Desktop Chrome'] },
+        dependencies: ['setup']
+    },
 
     // {
     //   name: 'webkit',
