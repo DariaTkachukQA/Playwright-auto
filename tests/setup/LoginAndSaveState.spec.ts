@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import HomePage from '../../Pages/Homepage';
 import SignInForm from '../../Forms/SignInform';
-import { credentials } from '../../states/userData'; 
+import { credentials } from '../../test-data/states/userData';
 
 test.describe.only('Setup users - get states', () => {
     let homePage: HomePage;
